@@ -1,10 +1,12 @@
 React-blog-Api
 ==================================
 [![Build Status](https://travis-ci.org/react-blog-platform/api.svg?branch=master)](https://travis-ci.org/react-blog-platform/api)
-
-![GitHub](https://img.shields.io/github/license/react-blog-platform/api)
+[![GitHub issues](https://img.shields.io/github/issues/react-blog-platform/api)](https://github.com/react-blog-platform/api/issues)
+[![GitHub license](https://img.shields.io/github/license/react-blog-platform/api)](https://github.com/react-blog-platform/api/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/badge/blog-open--source-brightgreen)](https://travis-ci.org/react-blog-platform/api)
 
 Support By:
+---------------
 
 - ES6 support via [babel](https://babeljs.io)
 - CORS support via [cors](https://github.com/troygoode/node-cors)
