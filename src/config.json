@@ -1,0 +1,7 @@
+{
+	"port": 8080,
+	"bodyLimit": "100kb",
+	"corsHeaders": ["Link"],
+	"expiresIn": "6h",
+	"secret": "MyBlog_z3kr3t."
+}
