@@ -1,7 +1,8 @@
 React-blog-Api
 ==================================
+[![Build Status](https://travis-ci.org/react-blog-platform/api.svg?branch=master)](https://travis-ci.org/react-blog-platform/api)
 
-[![StyleCI](https://github.styleci.io/repos/203916795/shield?branch=master)]
+![GitHub](https://img.shields.io/github/license/react-blog-platform/api)
 
 Support By:
 
