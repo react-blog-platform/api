@@ -5,24 +5,24 @@ import attachCurrentUser from '../middlewares/attachCurrentUser';
 
 export default (app) => {
 
-  app.post('/user/register', async (req, res) => {
-    const email = req.body.user.email;
-    const password = req.body.user.password;
+  app.post('/user/login', async (req, res) => {
+     
+    const { name, password } = req.body;
     try {
       const authServiceInstance = new AuthService();
-      const { user, token } = await authServiceInstance.Login(email, password);
-      return res.status(200).json({ user, token }).end();
+      const data = await authServiceInstance.Login(name, password);
+      return res.status(200).json(data).end();
     } catch(e) {
       return res.json(e).status(500).end();
     }
   })
 
-  app.post('/user/login', async (req, res) => {
-    const email = req.body.user.email;
-    const password = req.body.user.password;
+  app.get('/user/info',  isAuth, attachCurrentUser, async (req, res) => {
+     
+    const { name, password } = req.body;
     try {
       const authServiceInstance = new AuthService();
-      const data = await authServiceInstance.Login(email, password);
+      const data = await authServiceInstance.Login(name, password);
       return res.status(200).json(data).end();
     } catch(e) {
       return res.json(e).status(500).end();
@@ -41,9 +41,9 @@ export default (app) => {
   })
 
   app.post('/user/signup', async (req, res) => {
-    try {
-      console.log(req.body)
+     console.log(req.body)
       const { name, email, password } = req.body;
+    try {
       const authServiceInstance = new AuthService();
       const data = await authServiceInstance.SignUp(email, password, name);
       return res.json(data).status(200).end();

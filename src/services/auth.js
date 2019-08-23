@@ -6,22 +6,8 @@ import config from '../config.json';
 
 export default class AuthService {
   constructor() { }
-
-  async Register(email, password) {
-    const userRecord = await UserModel.findOne({ email });
-    console.log('Finding user record...');
-    if (userRecord) {
-      throw new Error('User has exist');
-    }
-
-    // todo...
-    // 往数据库插入一条记录
-    // 校验邮箱的有效性
-
-  }
-
-  async Login(email, password) {
-    const userRecord = await UserModel.findOne({ email });
+  async Login (name, password) {
+    const userRecord = await UserModel.findOne({ name });
     if (!userRecord) {
       // throw new Error('User not found')
       return {
@@ -34,7 +20,7 @@ export default class AuthService {
       if (!correctPassword) {
         // throw new Error('Incorrect password')
         return {
-          code: 501,
+          code: 502,
           success: false,
           message: '密码错误'
         }
@@ -44,6 +30,7 @@ export default class AuthService {
     return {
       code: 200,
       success: true,
+      message: '登录成功',
       data: {
         email: userRecord.email,
         name: userRecord.name,
@@ -67,7 +54,7 @@ export default class AuthService {
   }
 
   async SignUp(email, password, name) {
-    const userRecord = await UserModel.findOne({ email });
+    let userRecord = await UserModel.findOne({ email });
     if (userRecord) {
       // throw new Error('User has exist');
       return {
@@ -75,34 +62,44 @@ export default class AuthService {
         success: false,
         message: '邮箱已注册'
       }
-    } else {
-      const salt = randomBytes(32);
-      const passwordHashed = await argon2.hash(password, { salt });
-
-      const userRecord = await UserModel.create({
-        password: passwordHashed,
-        email,
-        salt: salt.toString('hex'),
-        name,
-      });
-      const token = this.generateJWT(userRecord);
-      console.log(userRecord, token)
-
-      return {
-        code: 200,
-        success: true,
-        data: {
-          email: userRecord.email,
-          name: userRecord.name,
-          token,
-        }
-      }
     }
 
+    userRecord = await UserModel.findOne({ name });
+    if (userRecord) {
+      // throw new Error('User has exist');
+      return {
+        code: 500,
+        success: false,
+        message: '用户名已占用'
+      }
+    }
+    
+    const salt = randomBytes(32);
+    const passwordHashed = await argon2.hash(password, { salt });
+
+    userRecord = await UserModel.create({
+      password: passwordHashed,
+      email,
+      salt: salt.toString('hex'),
+      name,
+    });
+    const token = this.generateJWT(userRecord);
+    console.log(userRecord, token)
+
+    // 校验邮箱真实性  TODO
+
+    return {
+      code: 200,
+      success: true,
+      data: {
+        email: userRecord.email,
+        name: userRecord.name,
+        token,
+      }
+    }
   }
 
   generateJWT(user) {
-
     return jwt.sign({
       data: {
         _id: user._id,
