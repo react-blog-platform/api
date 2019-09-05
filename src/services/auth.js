@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 import UserModel from '../models/user';
 import * as jwt from 'jsonwebtoken';
 import config from '../config.json';
-
+import {sendMail} from '../lib/util'
 export default class AuthService {
   constructor() { }
   async Login (name, password) {
@@ -84,9 +84,9 @@ export default class AuthService {
       name,
     });
     const token = this.generateJWT(userRecord);
-    console.log(userRecord, token)
 
     // 校验邮箱真实性  TODO
+    sendMail(userRecord,token)
 
     return {
       code: 200,

@@ -1,54 +1,47 @@
 const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
-
-const mailGenerator = new Mailgen({
-	theme: 'default',
-	product: {
-		name: 'Mailgen',
-		link: 'https://mailgen.js/'
-	}
-});
-
-const email = {
-	body: {
-		name: 'John Appleseed',
-		intro: 'You have received this email because a password reset request for your account was received.',
-		action: {
-			instructions: 'Click the button below to reset your password:',
-			button: {
-				color: '#DC4D2F',
-				text: 'Reset your password',
-				link: 'https://mailgen.js/reset?s=b350163a1a010d9729feb74992c1a010'
-			}
-		},
-		outro: 'If you did not request a password reset, no further action is required on your part.'
-	}
-};
-
-const emailBody = mailGenerator.generate(email);
+import emailConfig from './email'
 
 
 // 发送邮件的工具函数
-export function sendMail(options) {
-	let testAccount = nodemailer.createTestAccount();
-
-	let transporter = nodemailer.createTransport({
-		host: 'smtp.ethereal.email',
-		port: 587,
-		secure: false,
-		auth: {
-			user: testAccount.user,
-			pass: testAccount.pass
+export async function sendMail(options,token) {
+	let transporter = nodemailer.createTransport(emailConfig);
+	const mailGenerator = new Mailgen({
+		theme: 'default',
+		product: {
+			name: 'React Blog App',
+			link: 'https://baidu.com/'
 		}
 	});
 
-	transporter.sendMail({
-		from: '"Fred Foo 👻" <foo@example.com>',
-		to: 'bar@example.com, baz@example.com',
-		subject: 'Hello ✔',
-		text: 'Hello world?',
-		html: '<b>Hello world?</b>'
-	});
+	const email = {
+		body: {
+			name: options.name,
+			intro: ['很高兴你使用我们的博客服务！','当前邮箱有效期验证时间为30分钟，请在有效期内完成验证！'],
+			action: {
+				instructions: '请点击这里验证你的邮箱的合法性',
+				button: {
+					color: '#DCED2F',
+					text: '去验证',
+					link: `http://localhost:3000/user/email/check/${token}`
+				}
+			},
+			outro: '如果这不是你触发的申请或者你不想使用我们的服务，请忽视它!'
+		}
+	};
+
+	const emailBody = mailGenerator.generate(email);
+	const emailText = mailGenerator.generatePlaintext(email);
+
+	await transporter.sendMail({
+		from: emailConfig.auth.user,
+		to: options.email,
+		subject: '邮箱校验',
+		html: emailBody,
+		text: emailText,
+	}).catch(err => {
+		console.log(err)
+	})
 }
 
 
