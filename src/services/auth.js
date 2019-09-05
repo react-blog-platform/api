@@ -6,7 +6,8 @@ import config from '../config.json';
 import {sendMail} from '../lib/util'
 export default class AuthService {
   constructor() { }
-  async Login (name, password) {
+
+  async Login(name, password) {
     const userRecord = await UserModel.findOne({ name });
     if (!userRecord) {
       // throw new Error('User not found')
@@ -38,6 +39,7 @@ export default class AuthService {
       }
     }
   }
+  
   async LoginAs(email) {
     const userRecord = await UserModel.findOne({ email });
     console.log('Finding user record...');
@@ -85,8 +87,9 @@ export default class AuthService {
     });
     const token = this.generateJWT(userRecord);
 
-    // 校验邮箱真实性  TODO
-    sendMail(userRecord,token)
+    // 校验邮箱真实性 
+    // 发送邮件有问题，暂时注释
+    // sendMail(userRecord,token)
 
     return {
       code: 200,
