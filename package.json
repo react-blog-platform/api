@@ -1,7 +1,7 @@
 {
-  "name": "express-es6-blog",
-  "version": "0.3.0",
-  "description": "Starter project for an ES6 RESTful Express API",
+  "name": "api",
+  "version": "1.0.0",
+  "description": "backend services for react-blog-app",
   "main": "dist",
   "scripts": {
     "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
@@ -25,9 +25,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/developit/express-es6-rest-api.git"
+    "url": "git+github.com/react-blog-platform/api.git"
   },
-  "author": "Jason Miller <jason@developit.ca>",
   "license": "MIT",
   "dependencies": {
     "argon2": "^0.24.0",
