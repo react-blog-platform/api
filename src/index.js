@@ -1,38 +1,57 @@
 import http from 'http';
+import cluster from 'cluster';
+import { cpus } from 'os';
+
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import initializeDb from './db';
+import mongoose from 'mongoose';
+
 import api from './api';
 import config from './config.json';
 
-let app = express();
-app.server = http.createServer(app);
+const isMaster = cluster.isMaster
 
-// logger
-app.use(morgan('dev'));
+if (isMaster) {
+	const numWorkers = cpus().length
+	for(let i=0; i<numWorkers; i++){
+		cluster.fork()
+	}
 
-// 3rd party middleware
-app.use(cors({
-	exposedHeaders: config.corsHeaders
-}));
+	cluster.on('online', (worker) => console.log(`Worker ${worker.process.pid} is online`))
+	cluster.on('exit', (worker, exitCode) => {
+		console.log(`Worker ${worker.process.id} exited with code ${exitCode}`)
+		console.log(`Starting a new worker`)
+		cluster.fork()
+	})
 
-app.use(bodyParser.json({
-	limit : config.bodyLimit
-}));
+} else {
 
-// connect to db
-initializeDb( db => {
-	// internal middleware
-	// app.use(middleware({ config, db }));
+	let app = express();
+	app.server = http.createServer(app);
+	app.use(morgan('dev'));
+	app.use(cors({
+		exposedHeaders: config.corsHeaders
+	}));
 
-	// api router
-	app.use('/api', api);
+	app.use(bodyParser.json({
+		limit: config.bodyLimit
+	}));
 
-	app.server.listen(process.env.PORT || config.port, () => {
-		console.log(`Started on port ${app.server.address().port}`);
-	});
-});
+	mongoose.connect(
+		'mongodb://localhost/myblog',
+		{
+			useCreateIndex: true,
+			useNewUrlParser: true
+		}, err => {
+			if (err) {
+				console.log(err)
+				app.use('/api', api);
+				app.server.listen(process.env.PORT || config.port, () => {
+					console.log(`Started on port ${app.server.address().port}`);
+				});
+			}
+		});
 
-export default app;
+}
