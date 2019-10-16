@@ -4,6 +4,7 @@ React-blog-Api
 [![GitHub issues](https://img.shields.io/github/issues/react-blog-platform/api)](https://github.com/react-blog-platform/api/issues)
 [![GitHub license](https://img.shields.io/github/license/react-blog-platform/api)](https://github.com/react-blog-platform/api/blob/master/LICENSE)
 [![Build Status](https://img.shields.io/badge/blog-open--source-brightgreen)](https://travis-ci.org/react-blog-platform/api)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cce2bc580b4e4b53a953a9150353548b)](https://www.codacy.com/manual/lyfnsmile/api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=react-blog-platform/api&amp;utm_campaign=Badge_Grade)
 
 Support By:
 ---------------
